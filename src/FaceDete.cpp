@@ -1,11 +1,10 @@
-#include "FaceDete.h"
+#include "../inc/FaceDete.h"
 
 FaceDete::FaceDete():
 	APPID(),
 	SDKKey()
 {
 }
-
 
 FaceDete::~FaceDete()
 {
@@ -37,14 +36,12 @@ void FaceDete::InitEngine()
 		printf("ASFInitEngine sucess: %d\n", res);
 }
 
-
 size_t FaceDete::Loadregface()
 {
 	// ...
 	return 0;
 }
 
-//反初始化
 void FaceDete::UninitEngine()
 {
 	MRESULT res = ASFUninitEngine(handle);
@@ -54,7 +51,6 @@ void FaceDete::UninitEngine()
 		printf("ALUninitEngine sucess: %d\n", res);
 }
 
-//获取版本信息
 const ASF_VERSION* FaceDete::GetVersion()
 {
 	const ASF_VERSION* pVersionInfo = ASFGetVersion(handle);
@@ -66,7 +62,7 @@ void FaceDete::DetectFaces(Mat image, vector<DetectedResult>& detectedResultVec,
 {
 }
 
-//人脸对比
+//浜鸿劯瀵规瘮
 size_t FaceDete::CompareFeature(const ASF_FaceFeature& f)
 {
 	// ... 
@@ -77,7 +73,7 @@ void FaceDete::DrawRetangle(Mat & frame, MInt32 faceRect[4])
 {
 }
 
-//框定人脸
+//妗嗗畾浜鸿劯
 void DrawRetangle(Mat& frame, MInt32 faceRect[4])
 {
 	// ... 
