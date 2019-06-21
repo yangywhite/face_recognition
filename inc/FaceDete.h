@@ -9,11 +9,15 @@ public:
 
 	~FaceDete();
 
-	void SetAPPID(const string appid);
+	void SetAPPID(const char appid[]);
 
-	void SetSDKKey(const string sdkkey);
+	void SetSDKKey(const char sdkkey[]);
 
 	void SetPreloadPath(string path);
+
+	void SetConfLevel(MFloat Level);
+
+	MFloat GetConfLevel();
 
 	void Activation();
 
@@ -44,16 +48,15 @@ public:
 	*		false 不将识别结果保存在preload数据集中
 	* @ 无返回
 	*/
-	void DetectFaces(Mat image, vector<DetectedResult>& detectedResultVec,bool opt=false);
+	void DetectFaces(Mat &image, vector<DetectedResult>& detectedResultVec,bool opt=false);
 
 	/*
 	* @参数
 	*	f 是待匹配特征,它将和preLoadFeatureVec进行比较
 	* @返回值
-	*	返回 f 与preLoadFeatureVec匹配最高的索引
+	*	返回 f 与preLoadFeatureVec匹配满足阈值的索引
 	*/
-	size_t CompareFeature(const ASF_FaceFeature& f);
-
+	size_t CompareFeature(ASF_FaceFeature& f, MFloat confidenceLevel);
 
 	// 以下的函数暂用于debug/test测试
 	void DrawRetangle(Mat& frame, MInt32 faceRect[4]);
@@ -62,6 +65,7 @@ private:
 	MRESULT res;
 	MHandle handle;
 	string preloadPath;
+	MFloat threshold_confidenceLevel;
 	vector <ASF_FaceFeature> preLoadFeatureVec;
 
 	char * APPID;

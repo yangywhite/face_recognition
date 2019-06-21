@@ -1,24 +1,17 @@
-#include "DetectedResult.h"
+#include "..\inc\DetectedResult.h"
 
 DetectedResult::DetectedResult()
 {
-	feature.feature = new MByte();
-	ageInfo.ageArray = new MInt32();
-	genderInfo.genderArray = new MInt32();
-	livenessInfo.isLive = new MInt32();
+	feature.feature = nullptr;
+	feature.feature = nullptr;
+	genderInfo.genderArray = nullptr;
+	livenessInfo.isLive = nullptr;
+	confidenceLevel = 0;
 	// ... 
 }
 
 
 DetectedResult::~DetectedResult()
 {
-	if (feature.feature)
-		delete feature.feature;
-	if (ageInfo.ageArray)
-		delete ageInfo.ageArray;
-	if (genderInfo.genderArray)
-		delete genderInfo.genderArray;
-	if (livenessInfo.isLive)
-		delete livenessInfo.isLive;
-	// ... 
+
 }
