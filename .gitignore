@@ -1,0 +1,13 @@
+/Debug
+/Debug/Debug
+/Debug/asf_install.dat
+
+*.face_module.vcxproj
+*.face_module.vcxproj.filters
+*.vcxproj.user
+
+face_module/X64
+
+face_module.VC.VC.opendb
+face_module.VC.db
+face_module.sln
