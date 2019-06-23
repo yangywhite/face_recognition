@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "DetectedResult.h"
 
 class FaceDete
 {
@@ -37,7 +36,7 @@ public:
 	*	>0 加载成功的数量
 	*	-1 加载失败，有可能是路径错误
 	*/
-	size_t Loadregface();
+	int Loadregface();
 
 	/*
 	* @ 参数

@@ -1,4 +1,4 @@
-#include "inc\FaceDete.h"
+#include "FaceDete.h"
 
 int main() {
 	FaceDete facedete;
@@ -10,28 +10,31 @@ int main() {
 	facedete.GetVersion();
 	facedete.Activation();
 	facedete.InitEngine();
-	facedete.Loadregface();
+	if (facedete.Loadregface() == -1) {
+		cerr << "Error path" << endl;
+		return 1;
+	}
 
 	cv::VideoCapture cap(0);
 	if (!cap.isOpened())
 		return -1;
 	cv::Mat frame;
-	
+
 	vector<DetectedResult> detectedResultVec;
 	while (cap.isOpened())
 	{
-		
+
 		cap >> frame;
 		facedete.DetectFaces(frame, detectedResultVec, false);
 
-		// 寰幆姣斿璇嗗埆缁撴灉
+		// 循环比对识别结果
 		size_t index = 0;
 		for (vector<DetectedResult>::iterator it = detectedResultVec.begin();
 			it != detectedResultVec.end(); ++it) {
-			// 鍒鐗瑰緛
+			// 别对特征
 			index = facedete.CompareFeature(it->feature, it->confidenceLevel);
 			cout << "The number of the person currently authenticated is " << index << endl;
-			// 鍦ㄥ綋鍓嶅抚涓婄敾鍑烘潵
+			// 在当前帧上画出来
 			//if (index != 0)
 			facedete.DrawRetangle(frame, it->faceRect);
 		}

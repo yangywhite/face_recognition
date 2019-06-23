@@ -7,6 +7,7 @@
 #include "asvloffscreen.h"
 #include "merror.h"
 #include "dirent.h"
+#include "DetectedResult.h"
 
 using namespace cv;
 using namespace std;

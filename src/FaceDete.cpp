@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "..\inc\FaceDete.h"
+#include "../inc/FaceDete.h"
 
 FaceDete::FaceDete() :
 	APPID(), SDKKey()
@@ -37,11 +37,14 @@ void FaceDete::InitEngine()
 		printf("ASFInitEngine sucess: %d\n", res);
 }
 
-size_t FaceDete::Loadregface()
+int FaceDete::Loadregface()
 {
 	struct dirent *ptr;
 	DIR *dir;
 	dir = opendir(preloadPath.c_str());
+	if (dir == nullptr){
+		return -1;
+	}
 	vector<string> files;
 
 	Mat img;
@@ -90,7 +93,7 @@ const ASF_VERSION* FaceDete::GetVersion()
 void FaceDete::DetectFaces(Mat& frame, vector<DetectedResult>& detectedResultVec, bool opt)
 {
 	Mat cutFrame;
-	resize(frame, cutFrame, Size(frame.cols - frame.cols % 4, frame.rows));
+	cv::resize(frame, cutFrame, Size(frame.cols - frame.cols % 4, frame.rows));
 
 	ASF_MultiFaceInfo	multiFaceInfo = { 0 };
 	ASF_SingleFaceInfo singleFaceInfo = { 0 };
