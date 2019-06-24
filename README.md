@@ -38,33 +38,32 @@ Change your configuration into `X64`.
 2. Add target info
     - in `stuTable.json`, add info in json pattern:
     ``` json
-    {
-   // ↓ number.jpg/png  
-    "3" : {
-        "id": "12345678",
-        "name":"alita",
-        "major":"computer"
-    },
-    ...
+        {
+    // ↓ number.jpg/png  
+        "3" : {
+            "id": "12345678",
+            "name":"alita",
+            "major":"computer"
+        },
+        ...
 
-    "4" : {
-        "id": "87654321",
-        "name":"hahahah",
-        "major":"science"
+        "4" : {
+            "id": "87654321",
+            "name":"hahahah",
+            "major":"science"
+        }
     }
-}
     ```
-
-1. Code
-``` C++
-    // custom info 
-    cout << "[ID]" << currFace["id"] << endl;
-    cout << "[Name]" << currFace["name"] << endl;
-    cout << "[Major]" << currFace["major"] << endl;
-    // essential info
-    cout << "[confidence]" << currFace["confidence"] << endl;
-    cout << "[pathInPreload]" << currFace["pathInPreload"] << endl;
-    cout << "[age]" << currFace["age"] << endl;
-    cout << "[gender]" << currFace["gender"] << endl;
-    cout << "[liveinfo]" << currFace["liveinfo"] << endl;
-```
+3. Code
+    ``` C++
+        // custom info 
+        cout << "[ID]" << currFace["id"] << endl;
+        cout << "[Name]" << currFace["name"] << endl;
+        cout << "[Major]" << currFace["major"] << endl;
+        // essential info
+        cout << "[confidence]" << currFace["confidence"] << endl;
+        cout << "[pathInPreload]" << currFace["pathInPreload"] << endl;
+        cout << "[age]" << currFace["age"] << endl;
+        cout << "[gender]" << currFace["gender"] << endl;
+        cout << "[liveinfo]" << currFace["liveinfo"] << endl;
+    ```
