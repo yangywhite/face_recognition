@@ -47,7 +47,7 @@ public:
 	*		false 不将识别结果保存在preload数据集中
 	* @ 无返回
 	*/
-	void DetectFaces(Mat &image, vector<DetectedResult>& detectedResultVec,bool opt=false);
+	int DetectFaces(Mat &image, Json::Value &detectedResult);
 
 	/*
 	* @参数
@@ -66,11 +66,24 @@ public:
 	void DrawRetangle(Mat& frame, MInt32 faceRect[4]);
 
 private:
+
+	void GetFeaturefromImage(Mat & image, ASF_FaceFeature &feature);
+
+
+private:
 	MRESULT res;
 	MHandle handle;
 	string preloadPath;
 	MFloat threshold_confidenceLevel;
-	vector <ASF_FaceFeature> preLoadFeatureVec;
+	/*
+	*	struct PreloadInfo {
+	*		eature feature;
+	*  		std::string filename;
+	*	};
+	*/
+	vector <PreloadInfo> preLoadVec;
+
+	Json::Value stuTable;
 
 	char * APPID;
 	char * SDKKey;

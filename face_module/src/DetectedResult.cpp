@@ -7,6 +7,8 @@ DetectedResult::DetectedResult()
 	genderInfo.genderArray = nullptr;
 	livenessInfo.isLive = nullptr;
 	confidenceLevel = 0;
+	identifiable = false;
+	indexInPreload = -1;
 	// ... 
 }
 

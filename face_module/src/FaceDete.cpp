@@ -10,10 +10,10 @@ FaceDete::FaceDete() :
 FaceDete::~FaceDete()
 {
 	if (APPID) {
-		delete []APPID;
+		delete[]APPID;
 	}
 	if (SDKKey) {
-		delete []SDKKey;
+		delete[]SDKKey;
 	}
 }
 
@@ -42,16 +42,11 @@ int FaceDete::Loadregface()
 	struct dirent *ptr;
 	DIR *dir;
 	dir = opendir(preloadPath.c_str());
-	if (dir == nullptr){
+	if (dir == nullptr) {
 		return -1;
 	}
-	// For save filename
-	vector<string> files;
-
 	Mat img;
 	string filename;
-	vector<DetectedResult> detectedResultVec;
-
 	while ((ptr = readdir(dir)) != NULL)
 	{
 		// Skip the "." and ".." hidden files
@@ -63,19 +58,27 @@ int FaceDete::Loadregface()
 		// Check whether it is a image file
 		if (img.empty())
 			continue;
-
-		DetectFaces(img, detectedResultVec, true);
-
-		detectedResultVec.clear();
-
-		files.push_back(ptr->d_name);
-	}
-	cout << "registration done!" << endl;
-	for (int i = 0; i < files.size(); ++i)
-	{
-		cout <<i <<":"<< files[i] << endl;
+		PreloadInfo preloadInfo;
+		GetFeaturefromImage(img, preloadInfo.feature);
+		preloadInfo.filename = filename;
+		preLoadVec.push_back(preloadInfo);
 	}
 	closedir(dir);
+
+#ifdef _DEBUG
+	cout << "registration done!" << endl;
+	for (int i = 0; i < preLoadVec.size(); ++i)
+		cout << "[" << i << "]" << preLoadVec.at(i).filename << endl;
+#endif // _DEBUG
+
+	// 加载人员json信息
+	std::ifstream file(preloadPath + "//" +string("stuTable.json"));
+	if (!file.is_open()){
+		return -1;
+	}
+	file >> stuTable;
+	file.close();
+
 	return 0;
 }
 
@@ -94,161 +97,244 @@ const ASF_VERSION* FaceDete::GetVersion()
 	return pVersionInfo;
 }
 
-
-void FaceDete::DetectFaces(Mat& frame, vector<DetectedResult>& detectedResultVec, bool opt)
+int FaceDete::DetectFaces(Mat& frame, Json::Value &detectedResult)
 {
-	Mat cutFrame;
-	cv::resize(frame, cutFrame, Size(frame.cols - frame.cols % 4, frame.rows));
+	//--------------------------------------------
+	//				检测(Detection)
+	//--------------------------------------------
+	Mat resizeImage;
+	cv::resize(frame, resizeImage, Size(frame.cols - frame.cols % 4, frame.rows));
 
 	ASF_MultiFaceInfo	multiFaceInfo = { 0 };
 	ASF_SingleFaceInfo singleFaceInfo = { 0 };
 	ASF_FaceFeature feature = { 0 };
-
 	ASF_FaceFeature copyfeature = { 0 };
 
-	res = ASFDetectFaces(handle, cutFrame.cols, cutFrame.rows, ASVL_PAF_RGB24_B8G8R8, cutFrame.data, &multiFaceInfo);
+	res = ASFDetectFaces(handle, resizeImage.cols, resizeImage.rows,
+		ASVL_PAF_RGB24_B8G8R8, resizeImage.data, &multiFaceInfo);
 
 	if (MOK != res)
 	{
-		//人脸检测失败
+#ifdef _DEBUG
 		printf("ASFFaceFeatureExtract 1 fail: %d\n", res);
-		return;
+#endif // _DEBUG
+		return -1;
 	}
 
-	if (opt == true) {
+	vector<DetectedResult>detectedResultVec;
 
-		for (MInt32 i = 0; i < multiFaceInfo.faceNum; i++) {
-			singleFaceInfo.faceRect.left = multiFaceInfo.faceRect[i].left;
-			singleFaceInfo.faceRect.top = multiFaceInfo.faceRect[i].top;
-			singleFaceInfo.faceRect.right = multiFaceInfo.faceRect[i].right;
-			singleFaceInfo.faceRect.bottom = multiFaceInfo.faceRect[i].bottom;
-			singleFaceInfo.faceOrient = multiFaceInfo.faceOrient[i];
+	// 分别识别每张人脸
+	for (MInt32 i = 0; i < multiFaceInfo.faceNum; i++) {
+		singleFaceInfo.faceRect.left = multiFaceInfo.faceRect[i].left;
+		singleFaceInfo.faceRect.top = multiFaceInfo.faceRect[i].top;
+		singleFaceInfo.faceRect.right = multiFaceInfo.faceRect[i].right;
+		singleFaceInfo.faceRect.bottom = multiFaceInfo.faceRect[i].bottom;
+		singleFaceInfo.faceOrient = multiFaceInfo.faceOrient[i];
 
-			res = ASFFaceFeatureExtract(handle, cutFrame.cols, cutFrame.rows, ASVL_PAF_RGB24_B8G8R8, cutFrame.data, &singleFaceInfo, &feature);
+		res = ASFFaceFeatureExtract(handle, resizeImage.cols, resizeImage.rows,
+			ASVL_PAF_RGB24_B8G8R8, resizeImage.data, &singleFaceInfo, &feature);
 
-			if (MOK != res)
-			{
-				//人脸特征提取失败
-				printf("asffacefeatureextract 1 fail: %d\n", res);
-			}
-
-			copyfeature.featureSize = feature.featureSize;
-			copyfeature.feature = new MByte[feature.featureSize];
-			for (int i = 0; i != feature.featureSize; i++) {
-				copyfeature.feature[i] = feature.feature[i];
-			}
-
-			preLoadFeatureVec.push_back(copyfeature);
+		if (MOK != res)
+		{
+#ifdef _DEBUG
+			printf("asffacefeatureextract 1 fail: %d\n", res);
+#endif
+			continue;
 		}
-	}
-	else if (opt == false) {
+		// 获得所有分析数据
 
-		for (MInt32 i = 0; i < multiFaceInfo.faceNum; i++) {
-			singleFaceInfo.faceRect.left = multiFaceInfo.faceRect[i].left;
-			singleFaceInfo.faceRect.top = multiFaceInfo.faceRect[i].top;
-			singleFaceInfo.faceRect.right = multiFaceInfo.faceRect[i].right;
-			singleFaceInfo.faceRect.bottom = multiFaceInfo.faceRect[i].bottom;
-			singleFaceInfo.faceOrient = multiFaceInfo.faceOrient[i];
+		DetectedResult detectedResult;
 
-			res = ASFFaceFeatureExtract(handle, cutFrame.cols, cutFrame.rows, ASVL_PAF_RGB24_B8G8R8, cutFrame.data, &singleFaceInfo, &feature);
+		// 获取人脸位置
+		detectedResult.faceRect[0] = multiFaceInfo.faceRect[i].left;
+		detectedResult.faceRect[1] = multiFaceInfo.faceRect[i].top;
+		detectedResult.faceRect[2] = multiFaceInfo.faceRect[i].right;
+		detectedResult.faceRect[3] = multiFaceInfo.faceRect[i].bottom;
 
-			if (MOK != res)
-			{
-				//人脸特征提取失败
-				printf("asffacefeatureextract 1 fail: %d\n", res);
-			}
-			// 获得所有分析数据
+		// 获取特征值
+		detectedResult.feature.featureSize = feature.featureSize;
+		detectedResult.feature.feature = new MByte[feature.featureSize];
+		for (int i = 0; i < feature.featureSize; i++) {
+			detectedResult.feature.feature[i] = feature.feature[i];
+		}// end for of copy loop
 
-			DetectedResult detectedResult;
-
-			// 获取人脸位置
-			detectedResult.faceRect[0] = multiFaceInfo.faceRect[i].left;
-			detectedResult.faceRect[1] = multiFaceInfo.faceRect[i].top;
-			detectedResult.faceRect[2] = multiFaceInfo.faceRect[i].right;
-			detectedResult.faceRect[3] = multiFaceInfo.faceRect[i].bottom;
-
-			// 获取特征值
-			detectedResult.feature.featureSize = feature.featureSize;
-			detectedResult.feature.feature = new MByte[feature.featureSize];
-			for (int i = 0; i < feature.featureSize; i++) {
-				detectedResult.feature.feature[i] = feature.feature[i];
-			}
-
-			MInt32 processMask = ASF_AGE | ASF_GENDER | ASF_FACE3DANGLE | ASF_LIVENESS;
-			res = ASFProcess(handle, cutFrame.cols, cutFrame.rows, ASVL_PAF_RGB24_B8G8R8, cutFrame.data, &multiFaceInfo, processMask);
-			//res = ASFProcess(handle, cutImg1->width, cutImg1->height, ASVL_PAF_RGB24_B8G8R8, (MUInt8*)cutImg1->imageData, &multiFaceInfo, processMask);
-			if (res != MOK)
-				printf("ASFProcess fail: %d\n", res);
-			//else
-			//	printf("ASFProcess sucess: %d\n", res);
-
-			// 获取年龄
-			ASF_AgeInfo ageInfo = { 0 };
-			res = ASFGetAge(handle, &ageInfo);
-			if (res != MOK)
-				printf("ASFGetAge fail: %d\n", res);
-			else {
-				detectedResult.ageInfo.num = ageInfo.num;
+		MInt32 processMask = ASF_AGE | ASF_GENDER | ASF_FACE3DANGLE | ASF_LIVENESS;
+		res = ASFProcess(handle, resizeImage.cols, resizeImage.rows,
+			ASVL_PAF_RGB24_B8G8R8, resizeImage.data, &multiFaceInfo, processMask);
+		if (res != MOK) {
+#ifdef _DEBUG
+			printf("ASFProcess fail: %d\n", res);
+#endif
+			continue;
+		}
+		// 1.获取年龄
+		ASF_AgeInfo ageInfo = { 0 };
+		res = ASFGetAge(handle, &ageInfo);
+		if (res != MOK) {
+#ifdef _DEBUG
+			printf("ASFGetAge fail: %d\n", res);
+#endif
+		}
+		else {
+			detectedResult.ageInfo.num = ageInfo.num;
+			if (detectedResult.ageInfo.num != 0) {
 				detectedResult.ageInfo.ageArray = new MInt32[ageInfo.num];
 				for (int i = 0; i < ageInfo.num; i++) {
 					detectedResult.ageInfo.ageArray[i] = ageInfo.ageArray[i];
 				}
 			}
+		}// end if
 
-			// 获取性别
-			ASF_GenderInfo genderInfo = { 0 };
-			res = ASFGetGender(handle, &genderInfo);
-			if (res != MOK)
-				printf("ASFGetGender fail: %d\n", res);
-			else
-			{
-				detectedResult.genderInfo.num = genderInfo.num;
+		// 2.获取性别
+		ASF_GenderInfo genderInfo = { 0 };
+		res = ASFGetGender(handle, &genderInfo);
+		if (res != MOK) {
+#ifdef _DEBUG
+			printf("ASFGetGender fail: %d\n", res);
+#endif
+		}
+		else {
+			detectedResult.genderInfo.num = genderInfo.num;
+			if (detectedResult.genderInfo.num != -1) {
 				detectedResult.genderInfo.genderArray = new MInt32[genderInfo.num];
 				for (int i = 0; i < genderInfo.num; i++) {
 					detectedResult.genderInfo.genderArray[i] = genderInfo.genderArray[i];
 				}
 			}
-			//获取活体信息
-			ASF_LivenessInfo livenessInfo = { 0 };
-			res = ASFGetLivenessScore(handle, &livenessInfo);
-			if (res != MOK)
-				printf("ASFGetLivenessScore fail: %d\n", res);
-			else
-			{
-				detectedResult.livenessInfo.num = livenessInfo.num;
+		}// end if
+
+		// 3.获取活体信息
+		ASF_LivenessInfo livenessInfo = { 0 };
+		res = ASFGetLivenessScore(handle, &livenessInfo);
+		if (res != MOK) {
+#ifdef _DEBUG
+			printf("ASFGetLivenessScore fail: %d\n", res);
+#endif
+		}
+		else {
+			detectedResult.livenessInfo.num = livenessInfo.num;
+			if (detectedResult.livenessInfo.num != -1) {
 				detectedResult.livenessInfo.isLive = new MInt32[livenessInfo.num];
 				for (int i = 0; i < livenessInfo.num; i++)
 				{
 					detectedResult.livenessInfo.isLive[i] = livenessInfo.isLive[i];
 				}
 			}
-			detectedResultVec.push_back(detectedResult);
+		}// end if
+		detectedResultVec.push_back(detectedResult);
+	}// end 分别识别每张人脸
+
+	// --------------------------------------------
+	//				识别(Identification)
+	// --------------------------------------------
+	// 特征对比
+	for (size_t i = 0;i != detectedResultVec.size(); ++i) {
+		CompareFeature(detectedResultVec[i]);
+#ifdef _DEBUG
+		if (detectedResultVec[i].identifiable == true) {
+			cout
+				<< "MATCHED" << endl
+				<< "Source:" 
+						<<"[path]"<< detectedResultVec[i].pathInPreload <<" "
+						<<"[index]"<< detectedResultVec[i] .indexInPreload<< endl
+				<< "Confidence:" << detectedResultVec[i].confidenceLevel
+				<< endl;
 		}
-		cutFrame.release();
-	}
-}
+#endif
+	} // end 特征对比
 
-//人脸对比
-int FaceDete::CompareFeature(DetectedResult& result)
-{
-	for (size_t i = 0; i != preLoadFeatureVec.size(); i++) {
-		res = ASFFaceFeatureCompare(handle, &result.feature, &preLoadFeatureVec[i], &result.confidenceLevel);
-		
-		if (res != MOK)
-			printf("ASFFaceFeatureCompare fail: %d\n", res);
+	// --------------------------------------------
+	//			处理结果(Result Process)
+	// --------------------------------------------
+	string strIndex;
+	Json::Value tempStuTable;
+	for (size_t i = 0; i != detectedResultVec.size(); ++i) {
+		if (detectedResultVec[i].identifiable == true) {
 
-		if (result.confidenceLevel >= threshold_confidenceLevel)
-			return (int)i;
+			strIndex = std::to_string(detectedResultVec[i].indexInPreload);
+			
+			tempStuTable = Json::Value(stuTable[strIndex]);
+
+			for (int j = 0; j < 4; j++)
+				tempStuTable["rect"].append(detectedResultVec[i].faceRect[j]);
+
+			cout << tempStuTable << endl;
+			detectedResult.copy(tempStuTable);
+		}
 	}
 	return -1;
 }
 
+int FaceDete::CompareFeature(DetectedResult& result)
+{
+	MFloat maxConfidence = 0.0f;
 
+	// 循环识别,取得置信度最大的索引
+	for (size_t i = 0; i != preLoadVec.size(); i++) {
 
-//框定人脸
+		res = ASFFaceFeatureCompare(handle, &result.feature, &preLoadVec[i].feature, &result.confidenceLevel);
+
+		if (res != MOK){
+#ifdef _DEBUG
+			printf("ASFFaceFeatureCompare fail: %d\n", res);
+#endif
+			return -1;
+		}// end if 
+
+		if (result.confidenceLevel > threshold_confidenceLevel) {
+			result.identifiable = true;
+
+			if (result.confidenceLevel > maxConfidence) {
+				maxConfidence = result.confidenceLevel;
+				result.pathInPreload = preLoadVec[i].filename;
+				result.indexInPreload = (int)i;
+			}
+
+		}// end if
+		
+	}//end 循环对比
+
+	return 0;
+}
+
 void FaceDete::DrawRetangle(Mat& frame, MInt32 faceRect[4])
 {
 	rectangle(frame, Rect(faceRect[0], faceRect[1], (faceRect[2] - faceRect[0]), (faceRect[3] - faceRect[1])), Scalar(0, 0, 255), 4);
+}
+
+void FaceDete::GetFeaturefromImage(Mat & image, ASF_FaceFeature &feature)
+{
+	Mat reSizeImage;
+	cv::resize(image, reSizeImage, Size(image.cols - image.cols % 4, image.rows));
+	ASF_MultiFaceInfo	multiFaceInfo = { 0 };
+	ASF_SingleFaceInfo singleFaceInfo = { 0 };
+
+	res = ASFDetectFaces(handle, reSizeImage.cols, reSizeImage.rows,
+		ASVL_PAF_RGB24_B8G8R8, reSizeImage.data, &multiFaceInfo);
+
+	if (MOK != res)
+	{
+		printf("ASFFaceFeatureExtract 1 fail: %d\n", res);
+		// Do nothing with @feature
+		return;
+	}
+	// 仅选取第一个所识别的结果
+	singleFaceInfo.faceRect.left = multiFaceInfo.faceRect[0].left;
+	singleFaceInfo.faceRect.top = multiFaceInfo.faceRect[0].top;
+	singleFaceInfo.faceRect.right = multiFaceInfo.faceRect[0].right;
+	singleFaceInfo.faceRect.bottom = multiFaceInfo.faceRect[0].bottom;
+	singleFaceInfo.faceOrient = multiFaceInfo.faceOrient[0];
+
+	ASF_FaceFeature local_feature;
+	res = ASFFaceFeatureExtract(handle, reSizeImage.cols, reSizeImage.rows,
+		ASVL_PAF_RGB24_B8G8R8, reSizeImage.data, &singleFaceInfo, &local_feature);
+
+	feature.featureSize = local_feature.featureSize;
+	feature.feature = new MByte[local_feature.featureSize];
+	for (int i = 0; i < feature.featureSize; i++) {
+		feature.feature[i] = local_feature.feature[i];
+	}
+
 }
 
 void FaceDete::SetAPPID(const char appid[])
