@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <fstream>
 #include <opencv2\opencv.hpp>
@@ -11,6 +11,9 @@
 #include "DetectedResult.h"
 #include "PreloadInfo.h"
 #include "json.h"
+
+//#define _DEBUG
+#undef _DEBUG
 
 using namespace cv;
 using namespace std;

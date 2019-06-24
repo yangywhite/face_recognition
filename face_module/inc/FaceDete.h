@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "stdafx.h"
 
 class FaceDete
@@ -16,59 +16,39 @@ public:
 
 	void SetConfLevel(MFloat Level);
 
-	MFloat GetConfLevel();
-
 	void Activation();
 
 	void InitEngine(); 
 
 	void UninitEngine();
 
-	/*
-	* »ñÈ¡°æ±¾ĞÅÏ¢º¯Êı
-	*/
 	const ASF_VERSION* GetVersion();
 
 	/*
-	* @ ²ÎÊı
-	*	ËùÖ¸¶¨µÄÔ¤¼ÓÔØÎÄ¼şÂ·¾¶
-	* @ ·µ»ØÖµ
-	*	>0 ¼ÓÔØ³É¹¦µÄÊıÁ¿
-	*	-1 ¼ÓÔØÊ§°Ü£¬ÓĞ¿ÉÄÜÊÇÂ·¾¶´íÎó
+	* @ å‚æ•°
+	*	æ‰€æŒ‡å®šçš„é¢„åŠ è½½æ–‡ä»¶è·¯å¾„
+	* @ è¿”å›å€¼
+	*	>0 åŠ è½½æˆåŠŸçš„æ•°é‡
+	*	-1 åŠ è½½å¤±è´¥ï¼Œæœ‰å¯èƒ½æ˜¯è·¯å¾„é”™è¯¯
 	*/
 	int Loadregface();
 
 	/*
-	* @ ²ÎÊı
-	*	image [¿ÉÄÜ]°üº¬ÈËÁ³µÄÍ¼Ïñ
-	*	detectedResult Ê¶±ğ³öµÄ½á¹û
-	*	opt ÊÇ·ñ½«Ê¶±ğ½á¹û±£´æÔÚpreloadÊı¾İ¼¯ÖĞ
-	*		true ½«Ê¶±ğ½á¹û±£´æÔÚpreloadÊı¾İ¼¯ÖĞ
-	*		false ²»½«Ê¶±ğ½á¹û±£´æÔÚpreloadÊı¾İ¼¯ÖĞ
-	* @ ÎŞ·µ»Ø
+	* @ å‚æ•°
+	*	image [å¯èƒ½]åŒ…å«äººè„¸çš„å›¾åƒ
+	*	detectedResult 
+	* @ æ— è¿”å›
 	*/
 	int DetectFaces(Mat &image, Json::Value &detectedResult);
 
-	/*
-	* @²ÎÊı
-	*	result ÊÇÍ¨¹ıDetectFaces¼ì²âºóµÄÊ¶±ğ½á¹û
-	* @·µ»ØÖµ
-	*	·µ»ØpreLoadFeatureVecÆ¥ÅäÂú×ããĞÖµµÄË÷Òı
-	*   -1 ÎŞÆ¥ÅäµÄ£¬µ«ÊÇ¿ÉÄÜÓĞÁ½ÖÖÇé¿ö
-	*		1) È·ÊµÃ»ÓĞÆ¥ÅäµÄ
-	*		2) Æ¥Åä½á¹ûĞ¡ÓÚãĞÖµ
-	*	>=0 Æ¥Åä³É¹¦µÄË÷Òı 
-	*		
-	*/
-	int CompareFeature(DetectedResult& result);
-
-	// ÒÔÏÂµÄº¯ÊıÔİÓÃÓÚdebug/test²âÊÔ
+	// ä»¥ä¸‹çš„å‡½æ•°æš‚ç”¨äºdebug/testæµ‹è¯•
 	void DrawRetangle(Mat& frame, MInt32 faceRect[4]);
 
 private:
 
 	void GetFeaturefromImage(Mat & image, ASF_FaceFeature &feature);
 
+	int CompareFeature(DetectedResult& result);
 
 private:
 	MRESULT res;

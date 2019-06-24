@@ -248,21 +248,51 @@ int FaceDete::DetectFaces(Mat& frame, Json::Value &detectedResult)
 	// --------------------------------------------
 	string strIndex;
 	Json::Value tempStuTable;
+	int personIndex = 0;
 	for (size_t i = 0; i != detectedResultVec.size(); ++i) {
+
 		if (detectedResultVec[i].identifiable == true) {
 
+			// 利用识别结果中的对perload的索引
 			strIndex = std::to_string(detectedResultVec[i].indexInPreload);
 			
+			// 赋值临时变量，避免修改原本的值
 			tempStuTable = Json::Value(stuTable[strIndex]);
 
+			// 添加人脸位置
 			for (int j = 0; j < 4; j++)
 				tempStuTable["rect"].append(detectedResultVec[i].faceRect[j]);
 
-			cout << tempStuTable << endl;
-			detectedResult.copy(tempStuTable);
+			// 添加置信度
+			tempStuTable["confidence"] = detectedResultVec[i].confidenceLevel;
+			
+			// 添加加载库的路径
+			tempStuTable["pathInPreload"] = detectedResultVec[i].pathInPreload;
+
+			// 添加年龄
+			tempStuTable["age"] = detectedResultVec[i].ageInfo.ageArray[0];
+			
+			// 添加性别
+			tempStuTable["gender"] = detectedResultVec[i].genderInfo.genderArray[0];
+
+			// 添加活体信息
+			tempStuTable["liveinfo"] = detectedResultVec[i].livenessInfo.isLive[0];
+
+			detectedResult[std::to_string(personIndex)] = tempStuTable;
+
+#ifdef _DEBUG
+			cout << "[current]" << tempStuTable << endl;
+#endif
+			personIndex++;
 		}
 	}
-	return -1;
+	detectedResult["size"] = (personIndex > 0) ? personIndex : 0;
+
+#ifdef _DEBUG
+	cout << "[Total]" << detectedResult << endl;
+#endif
+
+	return 0;
 }
 
 int FaceDete::CompareFeature(DetectedResult& result)
@@ -280,6 +310,11 @@ int FaceDete::CompareFeature(DetectedResult& result)
 #endif
 			return -1;
 		}// end if 
+
+		// 防止置信度计算后降低
+		if (result.confidenceLevel < maxConfidence) {
+			result.confidenceLevel = maxConfidence;
+		}
 
 		if (result.confidenceLevel > threshold_confidenceLevel) {
 			result.identifiable = true;
@@ -352,11 +387,6 @@ void FaceDete::SetSDKKey(const char sdkkey[])
 void FaceDete::SetConfLevel(MFloat Level)
 {
 	this->threshold_confidenceLevel = Level;
-}
-
-MFloat FaceDete::GetConfLevel()
-{
-	return threshold_confidenceLevel;
 }
 
 void FaceDete::SetPreloadPath(string path)
