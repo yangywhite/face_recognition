@@ -51,11 +51,16 @@ public:
 
 	/*
 	* @参数
-	*	f 是待匹配特征,它将和preLoadFeatureVec进行比较
+	*	result 是通过DetectFaces检测后的识别结果
 	* @返回值
-	*	返回 f 与preLoadFeatureVec匹配满足阈值的索引
+	*	返回preLoadFeatureVec匹配满足阈值的索引
+	*   -1 无匹配的，但是可能有两种情况
+	*		1) 确实没有匹配的
+	*		2) 匹配结果小于阈值
+	*	>=0 匹配成功的索引 
+	*		
 	*/
-	size_t CompareFeature(ASF_FaceFeature& f, MFloat confidenceLevel);
+	int CompareFeature(DetectedResult& result);
 
 	// 以下的函数暂用于debug/test测试
 	void DrawRetangle(Mat& frame, MInt32 faceRect[4]);
