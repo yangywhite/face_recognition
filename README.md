@@ -1,5 +1,5 @@
 # face_recognition
-face_recognition, a pupolar tool in many applications, we used now is based on ArcFace created by [ArcSoft](https://www.arcsoft.com.cn/). 
+face_recognition, a popular tool in many applications, we used now is based on ArcFace created by [ArcSoft](https://www.arcsoft.com.cn/). 
 
 
 # Getting Start
