@@ -1,4 +1,6 @@
 # face_recognition
+face_recognition, a pupolar tool in many applications, we used now is based on ArcFace created by [ArcSoft](https://www.arcsoft.com.cn/). 
+
 
 # Getting Start
 - OpenCV 3.0 +
@@ -15,7 +17,7 @@ Change your configuration into `X64`.
 2. Add Library path
     - `opencv\opencv\build\include`
     - `opencv\build\x64\vc15\lib`
-    - `.\lib\`
+    - `X64/*`
 3. Add library files
     - `opencv_world346d.lib`
     - `libarcsoft_face_engine.lib`
