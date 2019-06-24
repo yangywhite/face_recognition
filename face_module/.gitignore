@@ -1,0 +1,4 @@
+*.vcxproj
+*.filter
+*.user
+asf_install.dat
