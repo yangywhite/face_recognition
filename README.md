@@ -2,7 +2,7 @@
 face_recognition, a popular tool in many applications, we used now is based on ArcFace created by [ArcSoft](https://www.arcsoft.com.cn/). 
 
 
-# Getting Start
+# Getting Started
 - OpenCV 3.0 +
 - Arcface 2.1 +
 - Visual Studio 2015 +
