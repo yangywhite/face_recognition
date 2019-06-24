@@ -12,7 +12,7 @@
 face_module/asf_install.dat
 *.vcxproj
 *.filters
-
+*.user
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
