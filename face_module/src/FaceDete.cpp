@@ -280,16 +280,12 @@ int FaceDete::DetectFaces(Mat& frame, Json::Value &detectedResult)
 
 			detectedResult[std::to_string(personIndex)] = tempStuTable;
 
-#ifdef _DEBUG
-			cout << "[current]" << tempStuTable << endl;
-#endif
 			personIndex++;
 		}
 	}
-	detectedResult["size"] = (personIndex > 0) ? personIndex : 0;
 
 #ifdef _DEBUG
-	cout << "[Total]" << detectedResult << endl;
+	cout << "[DetectedResult]" << detectedResult << endl;
 #endif
 
 	return 0;

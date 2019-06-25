@@ -29,17 +29,17 @@ int main() {
 		cap >> frame;
 		facedete.DetectFaces(frame, detectedResult);
 
-		// 以人为单位获取
-		// detectedResult["size"].asInt()
-		int totalFaceNum = detectedResult["size"].asInt();
+		// 获取当前帧有多少张识别出来的人脸
+		int totalFaceNum = detectedResult.size();
 		for (int i = 0; i < totalFaceNum;i++) {
-
 			Json::Value currFace = detectedResult[std::to_string(i)];
+
 			for (int j = 0; j < 4; j++) {
 				faceRect[j] = currFace["rect"][j].asInt();
 			}
 			facedete.DrawRetangle(frame, faceRect);
 			cout << "NO." << i << endl;
+			cout << "[currFace]" << currFace["rect"] << endl;
 			cout << "[ID]" << currFace["id"] << endl;
 			cout << "[Name]" << currFace["name"] << endl;
 			cout << "[Major]" << currFace["major"] << endl;
