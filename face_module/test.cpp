@@ -54,7 +54,6 @@ int main() {
 		if (waitKey(33) == 27) break;
 
 		detectedResult.clear();
-
 	}
 	facedete.UninitEngine();
 	facedete.GetVersion();
