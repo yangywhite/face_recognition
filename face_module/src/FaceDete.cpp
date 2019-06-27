@@ -4,7 +4,10 @@
 FaceDete::FaceDete() :
 	APPID(), SDKKey()
 {
-
+	SetAPPID("a4e18xLPPvPkB76rXtYM5GVraNduE3Q7vUnGPFLfhSj");
+	SetSDKKey("Fbu8Y5KNdMGpph8MrJc4GWceasdTeoGuCx3Qd4oRP6vs");
+	Activation();
+	InitEngine();
 }
 
 FaceDete::~FaceDete()
@@ -79,7 +82,7 @@ int FaceDete::Loadregface()
 	file >> stuTable;
 	file.close();
 
-	return 0;
+	return (int)preLoadVec.size();
 }
 
 void FaceDete::UninitEngine()

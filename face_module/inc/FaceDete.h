@@ -25,18 +25,16 @@ public:
 	const ASF_VERSION* GetVersion();
 
 	/*
-	* @ 参数
-	*	所指定的预加载文件路径
 	* @ 返回值
 	*	>0 加载成功的数量
-	*	-1 加载失败，有可能是路径错误
+	*	0 加载失败，有可能是路径错误
 	*/
 	int Loadregface();
 
 	/*
 	* @ 参数
 	*	image [可能]包含人脸的图像
-	*	detectedResult 
+	*	detectedResult 识别的结果
 	* @ 无返回
 	*/
 	int DetectFaces(Mat &image, Json::Value &detectedResult);
