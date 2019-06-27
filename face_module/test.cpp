@@ -36,7 +36,7 @@ int main() {
 
 			for (int j = 0; j < 4; j++) {
 				faceRect[j] = currFace["rect"][j].asInt();
-			}
+			} 
 			facedete.DrawRetangle(frame, faceRect);
 			cout << "NO." << i << endl;
 			cout << "[currFace]" << currFace["rect"] << endl;
