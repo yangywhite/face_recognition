@@ -12,7 +12,6 @@
 #include "PreloadInfo.h"
 #include "json.h"
 
-//#define _DEBUG
 #undef _DEBUG
 
 using namespace cv;

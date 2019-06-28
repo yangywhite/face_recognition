@@ -2,6 +2,7 @@
 
 int main() {
 	FaceDete facedete;
+
 	facedete.SetPreloadPath("sample");
 	facedete.SetConfLevel((MFloat)0.8);
 
@@ -22,7 +23,6 @@ int main() {
 		cap >> frame;
 		facedete.DetectFaces(frame, detectedResult);
 
-		// 获取当前帧有多少张识别出来的人脸
 		int totalFaceNum = detectedResult.size();
 		for (int i = 0; i < totalFaceNum;i++) {
 			currFace = detectedResult[std::to_string(i)];

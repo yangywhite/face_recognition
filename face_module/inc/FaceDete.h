@@ -16,11 +16,27 @@ public:
 
 	void SetConfLevel(MFloat Level);
 
-	void Activation();
 
-	void InitEngine(); 
+	/*
+	* @ 返回值
+	*	0 成功
+	*	1 失败
+	*/
+	int Activation();
 
-	void UninitEngine();
+	/*
+	* @ 返回值
+	*	0 成功
+	*	1 失败
+	*/
+	int InitEngine(); 
+	/*
+	* @ 返回值
+	*	0 成功
+	*	1 失败
+	*/
+
+	int UninitEngine();
 
 	const ASF_VERSION* GetVersion();
 

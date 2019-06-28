@@ -4,32 +4,16 @@ face_recognition, a popular tool in many applications, we used now is based on A
 # Getting Started
 - OpenCV 3.0 +
 - Arcface 2.1 +
-- Visual Studio 2015 +
+- Visual Studio 2015
 - [Jsoncpp](https://github.com/open-source-parsers/jsoncpp) 
 
-# Configure VS in your project
-Change your configuration into `X64`.
+# Compile 
+- Add `Opencv` and `ARCFACE` into environment, which will be used in `.vcxproj` file
+  - `OPENCV : ...\opencv\opencv\build`
+  - `ARCFACE: ...\arcface\v2.1`
+- Open `face_module.sln`
 
-1. Add include path
-    - `face_module\inc`
-    - `arcface\v2.1\inc`
-    - `opencv\build\include`
-    - `third_party\jsoncpp\inc`
-  
-2. Add library path
-    - `X64\`
-    - `arcface\v2.1\lib\X64`
-    - `opencv\build\x64\vc15\lib`
-    - `third_party\jsoncpp\lib`
-  
-3. Add libraries **(MSVC 2015 64bit)**
-    - `face_module.lib`
-    - `libarcsoft_face_engine.lib`
-    - `opencv_world346d.lib`
-    - `jsoncpp.lib`
-
-4. Test sample file
-    - copy the `test.cpp` into your favorite IDE.
+By the way, maybe you need to change the name of lib of OpenCV because the version we included is different(OpenCV346 on my platform). To avoid this problem, I suggest you install the same version of OpenCV.
 
 # Usage
 1. Add target images
