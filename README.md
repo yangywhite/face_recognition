@@ -7,8 +7,8 @@ face_recognition, a popular tool in many applications, we used now is based on A
 - Visual Studio 2015
 - [Jsoncpp](https://github.com/open-source-parsers/jsoncpp) 
 
-# Compile 
-- Add `OPENCV` and `ARCFACE` into environment, which will be used in `.vcxproj` file
+# Compiling from source
+- Add `OPENCV` and `ARCFACE` into environment, which will be used in `.vcxproj`:
   - `OPENCV : ...\opencv\opencv\build`
   - `ARCFACE: ...\arcface\v2.1`
 - Open `face_module.sln`
