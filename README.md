@@ -4,8 +4,8 @@ face_recognition, a popular tool in many applications, we used now is based on A
 # Getting Started
 - OpenCV 3.0 +
 - Arcface 2.1 +
-- Visual Studio 2015
-- [Jsoncpp](https://github.com/open-source-parsers/jsoncpp) 
+- Visual Studio 2017
+- [Jsoncpp](https://github.com/open-source-parsers/jsoncpp)
 
 # Compiling from source
 - Add `OPENCV` and `ARCFACE` into environment, which will be used in `.vcxproj`:
