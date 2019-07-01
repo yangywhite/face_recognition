@@ -21,13 +21,12 @@ By the way, maybe you need to change the name of lib of OpenCV because the versi
     - change your *image's name* into *number.jpg/png*(such as 3.jpg or 4.png)
     - Like:
     ```
-    06/02/2019  04:15 PM            14,618 0.jpg
-    05/31/2019  10:14 PM             8,275 1.jpg
-    06/02/2019  09:20 PM            11,903 2.jpg
-    06/25/2019  10:51 AM            64,442 3.jpg
-    06/30/2019  07:58 PM            71,324 4.jpg
+    // ...
     07/01/2019  08:31 PM            15,953 5.jpg
     ```
+    - In this chapter, I put that guy into my secret preload directory:
+    - ![](face_module/preload/5.jpg)
+  
 2. Add target info
     -  add info in json pattern into `peopleInfo.json`(Do not change this name):
     ``` Json
