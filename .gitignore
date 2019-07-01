@@ -9,8 +9,8 @@
 *.userosscache
 *.sln.docstates
 face_module/asf_install.dat
-face_module/sample/3.jpg
-face_module/sample/4.jpg
+face_module/preload/3.jpg
+face_module/preload/4.jpg
 *.bak
 
 # User-specific files (MonoDevelop/Xamarin Studio)

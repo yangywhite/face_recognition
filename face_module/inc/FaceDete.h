@@ -16,6 +16,7 @@ public:
 
 	void SetConfLevel(MFloat Level);
 
+	size_t GetRestrSize();
 
 	/*
 	* @ 返回值
@@ -29,15 +30,25 @@ public:
 	*	0 成功
 	*	1 失败
 	*/
+
 	int InitEngine(); 
+
 	/*
 	* @ 返回值
 	*	0 成功
 	*	1 失败
 	*/
-
 	int UninitEngine();
 
+	/*
+	*
+	*	typedef struct {
+	*		MPChar Version;							// 版本号
+	*		MPChar BuildDate;						// 构建日期
+	*		MPChar CopyRight;						// Copyright
+	*	}ASF_VERSION;
+	*
+	*/
 	const ASF_VERSION* GetVersion();
 
 	/*
@@ -77,7 +88,7 @@ private:
 	*/
 	vector <PreloadInfo> preLoadVec;
 
-	Json::Value stuTable;
+	Json::Value peopleInfo;
 
 	char * APPID;
 	char * SDKKey;

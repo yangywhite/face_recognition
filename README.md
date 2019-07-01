@@ -1,8 +1,8 @@
 # face_recognition
-face_recognition, a popular tool in many applications, we used now is based on ArcFace created by [ArcSoft](https://www.arcsoft.com.cn/). 
+face_recognition, a popular tool in many applications, we used now is based on ArcFace created by [ArcSoft](https://www.arcsoft.com.cn/).  What we did here is to finish a offline face_recognition TOOL, which can detecte and recognize the targets designated by you without any changes and modification in CODE and "TRAIN". 
 
 # Getting Started
-- OpenCV 3.0 +
+- OpenCV 3 +
 - Arcface 2.1 +
 - Visual Studio 2017
 - [Jsoncpp](https://github.com/open-source-parsers/jsoncpp)
@@ -17,67 +17,76 @@ By the way, maybe you need to change the name of lib of OpenCV because the versi
 
 # Usage
 1. Add target images
-    - add images into `sample/`(only one person contains is best)
+    - add images into `preload/`(only one person contains is best)
     - change your *image's name* into *number.jpg/png*(such as 3.jpg or 4.png)
+    - Like:
+    ```
+    06/02/2019  04:15 PM            14,618 0.jpg
+    05/31/2019  10:14 PM             8,275 1.jpg
+    06/02/2019  09:20 PM            11,903 2.jpg
+    06/25/2019  10:51 AM            64,442 3.jpg
+    06/30/2019  07:58 PM            71,324 4.jpg
+    07/01/2019  08:31 PM            15,953 5.jpg
+    ```
 2. Add target info
-    -  add info in json pattern in `stuTable.json`(Do not change this name):
-    ``` json
-        {
+    -  add info in json pattern into `peopleInfo.json`(Do not change this name):
+    ``` Json
+    {
         "3" : {
-            "id": "123456",
-            "name":"Alita",
-            "major":"Computer"
+            "id": "12345678",
+            "name":"alita",
+            "major":"computer"
         },
         "4" : {
-            "id": "789101112",
-            "name":"XiaoMing",
-            "major":"Not Decide"
+            "id": "87654321",
+            "name":"hahahah",
+            "major":"science"
+        },
+        "5" : {
+            "id": "42",
+            "name":"Linus Benedict Torvalds",
+            "major":"F*k NVIDIA"
         }
     }
     ```
-3. Code
-``` C++
-    cv::VideoCapture cap(0);
-    if (!cap.isOpened())
-        return -1;
-    cv::Mat frame;
+3. Run 
+    - Put your favorite photo into `sample/`, just like this `sample/test1.png`
 
-    Json::Value detectedResult;
-    // Store the position of face
-    MInt32 faceRect[4] = {0};
-    Json::Value currFace;
-
-    while (cap.isOpened())
-    {
-        cap >> frame;
+    ``` C++
+    cv::Mat frame = cv::imread("sample/test1.png");
         facedete.DetectFaces(frame, detectedResult);
 
         int totalFaceNum = detectedResult.size();
-        for (int i = 0; i < totalFaceNum;i++) {
+        for (int i = 0; i < totalFaceNum; i++) {
             currFace = detectedResult[std::to_string(i)];
 
-            for (int j = 0; j < 4; j++)
+            for (int j = 0; j < 4; j++) {
                 faceRect[j] = currFace["rect"][j].asInt();
+            }
             facedete.DrawRetangle(frame, faceRect);
-
             cout << "NO." << i << endl;
             cout << "[currFace]" << currFace["rect"] << endl;
-            // Custome data
             cout << "[ID]" << currFace["id"] << endl;
             cout << "[Name]" << currFace["name"] << endl;
             cout << "[Major]" << currFace["major"] << endl;
-            // Essential data
             cout << "[confidence]" << currFace["confidence"] << endl;
             cout << "[pathInPreload]" << currFace["pathInPreload"] << endl;
             cout << "[age]" << currFace["age"] << endl;
             cout << "[gender]" << currFace["gender"] << endl;
             cout << "[liveinfo]" << currFace["liveinfo"] << endl;
-
-        }// end for inside
-
-        imshow("show", frame);
-        if (waitKey(33) == 27) break;
-
-        detectedResult.clear();
-    }// end while for frame capture 
-```
+        }
+    ```
+    - Result: 
+    ``` 
+    ...
+    [ID]"42"
+    [Name]"Linus Benedict Torvalds"
+    [Major]"F*k NVIDIA"
+    [confidence]0.81119471788406372
+    [pathInPreload]"preload\\5.jpg"
+    [age]52
+    [gender]0
+    [liveinfo]1
+    ...
+    ```
+    ![test](face_module/sample/test1_result.png)
