@@ -1,0 +1,17 @@
+{
+    "3" : {
+        "id": "12345678",
+        "name":"alita",
+        "major":"computer"
+    },
+    "4" : {
+        "id": "87654321",
+        "name":"hahahah",
+        "major":"science"
+    },
+    "5" : {
+        "id": "42",
+        "name":"Linus Benedict Torvalds",
+        "major":"F*k NVIDIA"
+    }
+}
